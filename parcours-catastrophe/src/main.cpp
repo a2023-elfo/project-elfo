@@ -34,9 +34,39 @@ Vos propres fonctions sont creees ici
 **************************************************************************** */
 void maFonction(){
   // code
+  
+}
+void tourner_90_gauche ()
+{
+  ENCODER_Reset(MOTEUR_GAUCHE);
+  ENCODER_Reset(MOTEUR_DROIT);
+
+  while ((ENCODER_Read(MOTEUR_GAUCHE) <1800) && (ENCODER_Read(MOTEUR_DROIT)<1800))
+  {
+      MOTOR_SetSpeed(MOTEUR_GAUCHE, +SPEED_GAUCHE);
+      MOTOR_SetSpeed(MOTEUR_DROIT, -SPEED_DROITE);
+      
+  }
+    
+  MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
+  MOTOR_SetSpeed(MOTEUR_DROIT, 0);
 }
 
+void tourner_90_droite ()
+{
+  ENCODER_Reset(MOTEUR_GAUCHE);
+  ENCODER_Reset(MOTEUR_DROIT);
 
+  while ((ENCODER_Read(MOTEUR_GAUCHE)<1800) && (ENCODER_Read(MOTEUR_DROIT)<1800))
+  {
+      MOTOR_SetSpeed(MOTEUR_GAUCHE, -SPEED_GAUCHE);
+      MOTOR_SetSpeed(MOTEUR_DROIT, +SPEED_DROITE);
+      
+  }
+  MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
+  MOTOR_SetSpeed(MOTEUR_DROIT, 0);
+
+}
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -46,8 +76,7 @@ Fonctions d'initialisation (setup)
 
 void setup(){
   BoardInit();
-  MOTOR_SetSpeed(0, SPEED_GAUCHE);
-  MOTOR_SetSpeed(1, SPEED_DROITE);
+  
 }
 
 
@@ -74,14 +103,14 @@ void loop() {
 
   // Si le bumpeur droit est appuyé, tourne a gauche
   if (ROBUS_IsBumper(1)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
-    MOTOR_SetSpeed(1, 0.25);
+    tourner_90_gauche();
   }
 
   // Si le bumpeur gauche est appuyé, tourne a gauche
   if (ROBUS_IsBumper(0)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0.25);
-    MOTOR_SetSpeed(1, 0);
+     tourner_90_droite();
   }
 
 }
+
+
