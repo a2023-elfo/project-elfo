@@ -26,7 +26,7 @@ Variables globales et defines
 float SPEED_GAUCHE = 0.485;
 float SPEED_DROITE = 0.5;
 uint8_t MOTEUR_GAUCHE = 0;
-
+uint8_t MOTEUR_DROIT = 1;
 
 
 /* ****************************************************************************
