@@ -28,12 +28,38 @@ float SPEED_DROITE = 0.5;
 uint8_t MOTEUR_GAUCHE = 0;
 uint8_t MOTEUR_DROIT = 1;
 
+float vitesse;
+int etat = 0; //0 = arrêt 1 = avance 2 = recule 3 = TourneDroit 4 = TourneGauche
+#define KP = 0.0001
+#define KI = 0.00002
+
 
 /* ****************************************************************************
 Vos propres fonctions sont creees ici
 **************************************************************************** */
-void maFonction(){
-  // code
+//Ajuste la vitesse de rotation des deux moteurs 
+void avance()
+{
+  MOTOR_SetSpeed(RIGHT, vitesse);
+  MOTOR_SetSpeed(LEFT, vitesse);
+}
+
+void recule()
+{
+  MOTOR_SetSpeed(RIGHT, -vitesse);
+  MOTOR_SetSpeed(LEFT, -vitesse);
+}
+
+void tourneDroit()
+{
+  MOTOR_SetSpeed(RIGHT, 0.5*vitesse);
+  MOTOR_SetSpeed(LEFT, -0.5*vitesse);
+}
+
+void tourneGauche()
+{
+  MOTOR_SetSpeed(RIGHT, -0.5*vitesse);
+  MOTOR_SetSpeed(LEFT, 0.5*vitesse);
 }
 
 
