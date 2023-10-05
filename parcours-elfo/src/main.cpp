@@ -27,7 +27,8 @@ float SPEED_GAUCHE = 0.485;
 float SPEED_DROITE = 0.5;
 uint8_t MOTEUR_GAUCHE = 0;
 uint8_t MOTEUR_DROIT = 1;
-
+int PIN_AMBIANT = A6;
+int PIN_5KHZ = A7;
 
 /* ****************************************************************************
 Vos propres fonctions sont creees ici
@@ -57,31 +58,18 @@ Fonctions de boucle infini (loop())
 // -> Se fait appeler perpetuellement suite au "setup"
 
 void loop() {
-  // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
-  delay(10);// Delais pour décharger le CPU
+    
+    int valueAmb = analogRead(PIN_AMBIANT);
+    int value5khz = analogRead(PIN_5KHZ);
+    Serial.print("Ambiant :");
+    Serial.print(valueAmb);
+    Serial.print("\t");
+    Serial.print("5KHz : ");
+    Serial.println(value5khz);
+    delay(250);
+     if(value5khz >= valueAmb){
+      Serial.print("Avance\n");
+    };
 
-  // Si le bumper avant est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(2)) {
-    MOTOR_SetSpeed(0, -SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, -SPEED_DROITE);
-  }
+ }
 
-  // Si le bumper arrière est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(3)) {
-    MOTOR_SetSpeed(0, SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, SPEED_DROITE);
-  }
-
-  // Si le bumpeur droit est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(1)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
-    MOTOR_SetSpeed(1, 0.25);
-  }
-
-  // Si le bumpeur gauche est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(0)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0.25);
-    MOTOR_SetSpeed(1, 0);
-  }
-
-}
