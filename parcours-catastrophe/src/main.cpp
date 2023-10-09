@@ -67,6 +67,44 @@ void tourner_90_droite ()
   MOTOR_SetSpeed(MOTEUR_DROIT, 0);
 
 }
+
+void Avancer(int NbCycles){
+
+  int NbPulseMoteurGauche = ENCODER_Read(MOTEUR_GAUCHE);
+  int NbPulseMoteurDroit =  ENCODER_Read(MOTEUR_DROIT);
+ 
+  
+
+ for(int i = 0; i < NbCycles; i++){
+  ENCODER_Reset(MOTEUR_DROIT);
+  ENCODER_Reset(MOTEUR_GAUCHE);
+  NbPulseMoteurDroit = ENCODER_Read(MOTEUR_DROIT);
+  NbPulseMoteurGauche = ENCODER_Read(MOTEUR_GAUCHE);
+
+   MOTOR_SetSpeed(MOTEUR_GAUCHE, SPEED_GAUCHE);
+   MOTOR_SetSpeed(MOTEUR_DROIT, SPEED_DROIT);
+
+   while (NbPulseMoteurGauche < 6684 && NbPulseMoteurDroit < 6684)
+   {
+    if (NbPulseMoteurGauche < NbPulseMoteurDroit){
+      
+      SPEED_GAUCHE + 0.01;
+
+    }
+    else if(NbPulseMoteurGauche > NbPulseMoteurDroit){
+
+      SPEED_DROIT + 0.010305;
+
+    }
+ 
+    NbPulseMoteurGauche = ENCODER_Read(MOTEUR_GAUCHE);
+    NbPulseMoteurDroit =  ENCODER_Read(MOTEUR_DROIT);
+    
+   }
+ }
+MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
+MOTOR_SetSpeed(MOTEUR_DROIT, 0);
+}
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
