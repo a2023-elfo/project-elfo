@@ -82,6 +82,35 @@ void ArreterMoteur()
   MOTOR_SetSpeed(0, 0);
   MOTOR_SetSpeed(1, 0);
 }
+
+int DetectionMur(int pin1, int pin2)
+{
+  if (digitalRead(pin1) == LOW || digitalRead(pin2) == LOW)
+  {
+    delay(100);
+    ArreterMoteur();
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+bool Depart(uint8_t a, uint8_t b)
+{
+  int valeurambiant = analogRead(a);
+  int valeur5kHz = analogRead(b);
+
+  if (valeur5kHz > 500)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -131,31 +160,12 @@ void loop() {
      tourner_90_droite();
   }
 
-    int valeur_ambiant = analogRead(A0);
-  int valeur_5kHz = analogRead(A1);
-
   while (depart != true)
   {
-    valeur_5kHz = analogRead(A1);
-    if (valeur_5kHz > 500)
-    {
-      depart = true;
-      Debut(depart);
-    }
+    depart = Depart(A0, A1);
   }
 
-  if (digitalRead(49) == LOW || digitalRead(53) == LOW)
-  {
-    delay(100);
-    ArreterMoteur();
-    delay(1000);
-  }
-  else
-  {
-    MOTOR_SetSpeed(LEFT, 0.5);
-    MOTOR_SetSpeed(RIGHT, 0.53);
-  }
-
+  DetectionMur(49, 53);
 }
 
 
