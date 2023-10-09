@@ -82,7 +82,7 @@ void Avancer(int NbCycles){
   NbPulseMoteurGauche = ENCODER_Read(MOTEUR_GAUCHE);
 
    MOTOR_SetSpeed(MOTEUR_GAUCHE, SPEED_GAUCHE);
-   MOTOR_SetSpeed(MOTEUR_DROIT, SPEED_DROIT);
+   MOTOR_SetSpeed(MOTEUR_DROIT, SPEED_DROITE);
 
    while (NbPulseMoteurGauche < 6684 && NbPulseMoteurDroit < 6684)
    {
@@ -93,7 +93,7 @@ void Avancer(int NbCycles){
     }
     else if(NbPulseMoteurGauche > NbPulseMoteurDroit){
 
-      SPEED_DROIT + 0.010305;
+      SPEED_DROITE + 0.010305;
 
     }
  
@@ -104,6 +104,55 @@ void Avancer(int NbCycles){
  }
 MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
 MOTOR_SetSpeed(MOTEUR_DROIT, 0);
+}
+
+
+
+
+void colonne_1_nav(){
+  int colonne = 1;
+  int ligne;
+  int detection_mur = 1
+  if (detection_mur == 0 && ligne < 10){
+    Avancer(2);
+    
+    colonne = 1;
+    //fini a la colonne 1
+  }
+  else{
+    tourner_90_gauche;
+    if (detection_mur == 0){
+      Avancer(1);
+      tourner_90_droite;
+      if (detection_mur == 0){
+        Avancer(2);
+        
+        colonne = 0;
+        //fini a la colonne 0
+
+      }
+      else{
+        tourner_90_gauche;
+        Avancer(2);
+        tourner_90_droite;
+        Avancer(2);
+        colonne = 2;
+        
+        //fini a la colonne 2
+      }
+    }
+    else{
+      tourner_90_droite;
+      tourner_90_droite;
+      Avancer(1);
+      tourner_90_gauche;
+      Avancer(2);
+      
+      colonne = 2;
+      //fini a la colonne 2
+      
+    }
+  }
 }
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
@@ -122,6 +171,8 @@ void setup(){
 Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
+
+
 
 void loop() {
   // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
@@ -148,6 +199,32 @@ void loop() {
   if (ROBUS_IsBumper(0)) {
      tourner_90_droite();
   }
+  
+ /* if (detection_sifflet == 1){
+    
+    int ligne = 0;
+    int colonne = 1;
+    while(ligne < 10){
+      if (colonne == 0){
+        colonne_0_nav;
+        ligne = ligne + 2;
+      }
+      else if (colonne == 1){
+        colonne_1_nav;
+        ligne = ligne + 2;
+
+      }
+      else if (colonne == 2){
+        colonne_2_nav;
+        ligne = ligne + 2;
+
+      }
+
+
+    }
+    
+  }*/
+
 
 }
 
