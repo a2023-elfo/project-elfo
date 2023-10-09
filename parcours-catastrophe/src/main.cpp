@@ -36,6 +36,43 @@ void maFonction(){
   // code
   
 }
+
+void Case_0_nav()
+{
+
+int ligne=0;
+
+while(ligne<9)
+{
+  if(detectionmur==1)
+  {
+    tourner_90_droite();
+    Avancer(1);
+    if(detectionmur==1)
+    {
+      tourner_90_gauche();
+      Avancer(2);
+    }
+    else
+    {
+      Avancer(1);
+      tourner_90_gauche();
+      Avancer(2);
+    }
+  }
+  else
+  {
+    Avancer(2);
+  }
+
+}
+
+}
+
+
+
+
+
 void tourner_90_gauche ()
 {
   ENCODER_Reset(MOTEUR_GAUCHE);
@@ -82,7 +119,7 @@ void Avancer(int NbCycles){
   NbPulseMoteurGauche = ENCODER_Read(MOTEUR_GAUCHE);
 
    MOTOR_SetSpeed(MOTEUR_GAUCHE, SPEED_GAUCHE);
-   MOTOR_SetSpeed(MOTEUR_DROIT, SPEED_DROIT);
+   MOTOR_SetSpeed(MOTEUR_DROIT, SPEED_DROITE);
 
    while (NbPulseMoteurGauche < 6684 && NbPulseMoteurDroit < 6684)
    {
@@ -93,7 +130,7 @@ void Avancer(int NbCycles){
     }
     else if(NbPulseMoteurGauche > NbPulseMoteurDroit){
 
-      SPEED_DROIT + 0.010305;
+      SPEED_DROITE + 0.010305;
 
     }
  
@@ -148,6 +185,14 @@ void loop() {
   if (ROBUS_IsBumper(0)) {
      tourner_90_droite();
   }
+
+  
+
+
+
+
+
+
 
 }
 
