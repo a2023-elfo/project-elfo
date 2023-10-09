@@ -37,41 +37,6 @@ void maFonction(){
   
 }
 
-void Case_0_nav()
-{
-
-int ligne=0;
-
-while(ligne<9)
-{
-  if(detectionmur==1)
-  {
-    tourner_90_droite();
-    Avancer(1);
-    if(detectionmur==1)
-    {
-      tourner_90_gauche();
-      Avancer(2);
-    }
-    else
-    {
-      Avancer(1);
-      tourner_90_gauche();
-      Avancer(2);
-    }
-  }
-  else
-  {
-    Avancer(2);
-  }
-
-}
-
-}
-
-
-
-
 
 void tourner_90_gauche ()
 {
@@ -120,8 +85,10 @@ void ArreterMoteur()
   MOTOR_SetSpeed(1, 0);
 }
 
-int DetectionMur(int pin1, int pin2)
+int DetectionMur()
 {
+  int pin1 = 49;
+  int pin2 = 53;
   if (digitalRead(pin1) == LOW || digitalRead(pin2) == LOW)
   {
     delay(100);
@@ -186,6 +153,37 @@ void Avancer(int NbCycles){
 MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
 MOTOR_SetSpeed(MOTEUR_DROIT, 0);
 }
+
+void Case_0_nav()
+{
+  int ligne=0;
+
+  while(ligne<9)
+  {
+    if(DetectionMur()==1)
+    {
+      tourner_90_droite();
+      Avancer(1);
+      if(DetectionMur()==1)
+      {
+        tourner_90_gauche();
+        Avancer(2);
+      }
+      else
+      {
+        Avancer(1);
+        tourner_90_gauche();
+        Avancer(2);
+      }
+    }
+    else
+    {
+      Avancer(2);
+    }
+  return;
+  }
+
+}
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -213,34 +211,19 @@ void loop() {
   // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
   delay(10);// Delais pour décharger le CPU
 
-  // Si le bumper avant est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(2)) {
-    MOTOR_SetSpeed(0, -SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, -SPEED_DROITE);
-  }
-
-  // Si le bumper arrière est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(3)) {
-    MOTOR_SetSpeed(0, SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, SPEED_DROITE);
-  }
-
-  // Si le bumpeur droit est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(1)) {
-    tourner_90_gauche();
-  }
 
   // Si le bumpeur gauche est appuyé, tourne a gauche
   if (ROBUS_IsBumper(0)) {
-     tourner_90_droite();
+     Case_0_nav();
   }
 
-  while (depart != true)
+ /* while (depart != true)
   {
     depart = Depart(A0, A1);
   }
 
-  DetectionMur(49, 53);
+  DetectionMur();*/
+  
 }
 
 
