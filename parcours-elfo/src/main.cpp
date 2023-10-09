@@ -20,18 +20,21 @@ Variables globales et defines
 **************************************************************************** */
 // -> defines...
 // L'ensemble des fonctions y ont acces
-//float SPEED_GAUCHE = 0.485;
-//float SPEED_DROITE = 0.5;
 
-float SPEED_GAUCHE = 0.485;
-float SPEED_DROITE = 0.5;
+
+float SPEED_GAUCHE;
+float SPEED_DROITE;
 uint8_t MOTEUR_GAUCHE = 0;
 uint8_t MOTEUR_DROIT = 1;
 
-float vitesse;
-int etat = 0; //0 = arrêt 1 = avance 2 = recule 3 = TourneDroit 4 = TourneGauche
+float vitesse = 0.6;
+int etat = 1; //0 = arrêt 1 = avance 2 = recule 3 = TourneDroit 4 = TourneGauche
 #define KP = 0.0001
 #define KI = 0.00002
+
+// Fonction détection mur (Alyson)
+const int ROUGE = 49;
+const int VERTE = 48;
 
 
 /* ****************************************************************************
@@ -43,6 +46,12 @@ void avance()
   MOTOR_SetSpeed(RIGHT, vitesse);
   MOTOR_SetSpeed(LEFT, vitesse);
 }
+
+// Fonction arreter
+void arret(){
+  MOTOR_SetSpeed(RIGHT, 0);
+  MOTOR_SetSpeed(LEFT, 0);
+};
 
 void recule()
 {
@@ -72,8 +81,8 @@ Fonctions d'initialisation (setup)
 
 void setup(){
   BoardInit();
-  MOTOR_SetSpeed(0, SPEED_GAUCHE);
-  MOTOR_SetSpeed(1, SPEED_DROITE);
+  pinMode(ROUGE, INPUT);
+  pinMode(VERTE, INPUT);
 }
 
 
@@ -82,32 +91,26 @@ Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
 
-void loop() {
-  // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
-  delay(10);// Delais pour décharger le CPU
+void loop() 
+{
+  avance();
 
-  // Si le bumper avant est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(2)) {
-    MOTOR_SetSpeed(0, -SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, -SPEED_DROITE);
+  int val1 = digitalRead(ROUGE);
+  int val2 = digitalRead(VERTE);
+ 
+   
+  if (val1 == LOW || val2 == LOW)  // détecte du mouvement
+  {
+    // Fonction arreter
+    arret();
+    delay(200);
+       
+  } 
+
+  else 
+  {
+    // Fonction avancer
+     avance();
+    
   }
-
-  // Si le bumper arrière est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(3)) {
-    MOTOR_SetSpeed(0, SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, SPEED_DROITE);
-  }
-
-  // Si le bumpeur droit est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(1)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
-    MOTOR_SetSpeed(1, 0.25);
-  }
-
-  // Si le bumpeur gauche est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(0)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0.25);
-    MOTOR_SetSpeed(1, 0);
-  }
-
 }
