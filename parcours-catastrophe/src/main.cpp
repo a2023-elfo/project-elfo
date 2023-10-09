@@ -105,6 +105,50 @@ void tourner_90_droite ()
 
 }
 
+void Debut(bool go)
+{
+  if (go == true)
+  {
+    MOTOR_SetSpeed(LEFT, 0.5);
+    MOTOR_SetSpeed(RIGHT, 0.53);
+  }
+}
+
+void ArreterMoteur()
+{
+  MOTOR_SetSpeed(0, 0);
+  MOTOR_SetSpeed(1, 0);
+}
+
+int DetectionMur(int pin1, int pin2)
+{
+  if (digitalRead(pin1) == LOW || digitalRead(pin2) == LOW)
+  {
+    delay(100);
+    ArreterMoteur();
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+bool Depart(uint8_t a, uint8_t b)
+{
+  int valeurambiant = analogRead(a);
+  int valeur5kHz = analogRead(b);
+
+  if (valeur5kHz > 500)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void Avancer(int NbCycles){
 
   int NbPulseMoteurGauche = ENCODER_Read(MOTEUR_GAUCHE);
@@ -151,7 +195,10 @@ Fonctions d'initialisation (setup)
 
 void setup(){
   BoardInit();
-  
+  pinMode(49, INPUT);
+  pinMode(53, INPUT);
+  pinMode(48, INPUT);
+  pinMode(52, INPUT);
 }
 
 
@@ -159,6 +206,8 @@ void setup(){
 Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
+
+bool depart = false;
 
 void loop() {
   // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
@@ -186,14 +235,12 @@ void loop() {
      tourner_90_droite();
   }
 
-  
+  while (depart != true)
+  {
+    depart = Depart(A0, A1);
+  }
 
-
-
-
-
-
-
+  DetectionMur(49, 53);
 }
 
 
