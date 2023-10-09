@@ -67,6 +67,21 @@ void tourner_90_droite ()
   MOTOR_SetSpeed(MOTEUR_DROIT, 0);
 
 }
+
+void Debut(bool go)
+{
+  if (go == true)
+  {
+    MOTOR_SetSpeed(LEFT, 0.5);
+    MOTOR_SetSpeed(RIGHT, 0.53);
+  }
+}
+
+void ArreterMoteur()
+{
+  MOTOR_SetSpeed(0, 0);
+  MOTOR_SetSpeed(1, 0);
+}
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -76,7 +91,10 @@ Fonctions d'initialisation (setup)
 
 void setup(){
   BoardInit();
-  
+  pinMode(49, INPUT);
+  pinMode(53, INPUT);
+  pinMode(48, INPUT);
+  pinMode(52, INPUT);
 }
 
 
@@ -84,6 +102,8 @@ void setup(){
 Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
+
+bool depart = false;
 
 void loop() {
   // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
@@ -109,6 +129,31 @@ void loop() {
   // Si le bumpeur gauche est appuyé, tourne a gauche
   if (ROBUS_IsBumper(0)) {
      tourner_90_droite();
+  }
+
+    int valeur_ambiant = analogRead(A0);
+  int valeur_5kHz = analogRead(A1);
+
+  while (depart != true)
+  {
+    valeur_5kHz = analogRead(A1);
+    if (valeur_5kHz > 500)
+    {
+      depart = true;
+      Debut(depart);
+    }
+  }
+
+  if (digitalRead(49) == LOW || digitalRead(53) == LOW)
+  {
+    delay(100);
+    ArreterMoteur();
+    delay(1000);
+  }
+  else
+  {
+    MOTOR_SetSpeed(LEFT, 0.5);
+    MOTOR_SetSpeed(RIGHT, 0.53);
   }
 
 }
