@@ -28,14 +28,16 @@ byte valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
 const int MAGIC_NUMBER_50CM = 6583;
 const int MAGIC_NUMBER_TURNING_LEFT = 1769;
 const int MAGIC_NUMBER_TURNING_RIGHT = 1995;
-const int SPEED_BUFFER = 200;
+const int SPEED_BUFFER = 75;
 
 //position
 byte compteur_colonne = 1;
 byte compteur_ligne = 0;
-byte previous_colonne = 0;
-byte previous_ligne = 0;
 int orientation_degree = 90; // Commence face au nord
+byte coordsColonneVisite[30] = {99};
+byte coordsLigneVisite[30] = {99};
+
+byte casesParcouru = 0;
 
 #define NORD 90
 #define SUD 270
@@ -154,8 +156,9 @@ void avance50cm() {
     }
 
     // Compute la nouvelle position
-    previous_colonne = compteur_colonne;
-    previous_ligne = compteur_ligne;
+    coordsColonneVisite[casesParcouru] = compteur_colonne;
+    coordsLigneVisite[casesParcouru] = compteur_ligne;
+    casesParcouru++;
 
     switch (getOrientationDegrees())
     {
@@ -208,34 +211,11 @@ void tournerDroit90() {
 }
 
 void navigation_depart() {
-    if (!faceAuMur()) {
-        // Center is free
-        avance50cm();
-    } else {
-        // On check a gauche toujours
-        tournerGauche90();
-        if (faceAuMur()) {
-            tournerDroit90();
-            tournerDroit90();
-            avance50cm();
-            tournerGauche90();
-            avance50cm();
-        } else {
-            // On check s'il n'y a pas un mur entre la première et la deuxième ligne
-            avance50cm();
-            tournerDroit90();
-
-            if (faceAuMur()) {
-                tournerDroit90();
-                avance50cm();
-                avance50cm();
-                tournerGauche90();
-                avance50cm();   
-            } else {
-                avance50cm();
-            }
-        }
-    }
+    tournerDroit90();
+    avance50cm();
+    tournerGauche90();
+    avance50cm();
+    avance50cm();
 }
 
 void navigation() {
@@ -262,7 +242,16 @@ void navigation() {
             break;
         }
 
-        if (computeColonne == previous_colonne && computeLigne == previous_ligne) {
+        bool faceDejaVisite = false;
+
+        for (int i = 0; i < casesParcouru; i++) {
+            if (computeColonne == coordsColonneVisite[i] && computeLigne == coordsLigneVisite[i]) {
+                faceDejaVisite = true;
+                break;
+            }
+        }
+
+        if (faceDejaVisite) {
             tournerGauche90();
         }   // On check si on est pas sur le bord d'aller out of bounds
         else if (getOrientationDegrees() == EST && compteur_colonne == 2) {
@@ -316,14 +305,31 @@ Main functions
 **************************************************************************** */
 
 void setup() {
-  BoardInit();
-  Serial.begin(9600);
-  pinMode(ROUGE, INPUT);
-  pinMode(VERTE, INPUT);
-  pinMode(PIN_5KHZ, INPUT);
-  // Set default speeds
-  vitesseL = defaultVitesseL;
-  vitesseR = defaultVitesseR;
+    BoardInit();
+    Serial.begin(9600);
+    pinMode(ROUGE, INPUT);
+    pinMode(VERTE, INPUT);
+    pinMode(PIN_5KHZ, INPUT);
+    // Set default speeds
+    vitesseL = defaultVitesseL;
+    vitesseR = defaultVitesseR;
+
+    // Ajout des valeurs illégales
+    coordsColonneVisite[casesParcouru] = 1;
+    coordsLigneVisite[casesParcouru] = 1;
+    casesParcouru++;
+
+    coordsColonneVisite[casesParcouru] = 1;
+    coordsLigneVisite[casesParcouru] = 3;
+    casesParcouru++;
+
+    coordsColonneVisite[casesParcouru] = 1;
+    coordsLigneVisite[casesParcouru] = 7;
+    casesParcouru++;
+
+    coordsColonneVisite[casesParcouru] = 1;
+    coordsLigneVisite[casesParcouru] = 9;
+    casesParcouru++;
 }
 
 void printDebugInfo() {
@@ -347,7 +353,7 @@ void loop() {
     switch (valEtat)
     {
         case 1: // Navigation
-            if (compteur_ligne == 0) { // Fonction de démarrage pour le cul de sac potetiel
+            if (compteur_ligne < 3) { // Fonction de démarrage pour le cul de sac potetiel
                 navigation_depart();
             } else if (compteur_ligne < 9) {
                 navigation();
