@@ -19,16 +19,16 @@ Variables globales et defines
 **************************************************************************** */
 // Global speed, love to see it
 const float defaultVitesseR = 0.25;
-const float defaultVitesseL = 0.25;
-const float turningSpeed = 0.2;
+const float defaultVitesseL = 0.265;
+const float turningSpeed = 0.3;
 float vitesseR, vitesseL;
 
 byte valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
 
 const int MAGIC_NUMBER_50CM = 6583;
-const int MAGIC_NUMBER_TURNING_LEFT = 1769;
-const int MAGIC_NUMBER_TURNING_RIGHT = 1995;
-const int SPEED_BUFFER = 75;
+const int MAGIC_NUMBER_TURNING_LEFT = 1630;
+const int MAGIC_NUMBER_TURNING_RIGHT = 1945;
+const int SPEED_BUFFER = 5;
 
 //position
 byte compteur_colonne = 1;
@@ -46,7 +46,7 @@ byte casesParcouru = 0;
 
 
 // Offset correction
-#define KP 0.00002
+#define KP 0.000005
 
 //mur
 const int ROUGE = 49; // Left
@@ -129,7 +129,7 @@ Movement functions
 void arret() {
   MOTOR_SetSpeed(RIGHT, 0);
   MOTOR_SetSpeed(LEFT, 0);
-  delay(500);
+  delay(150);
 }
 
 void avance50cm() {
@@ -141,8 +141,6 @@ void avance50cm() {
     MOTOR_SetSpeed(LEFT, vitesseL);
 
     while(ENCODER_Read(LEFT) < MAGIC_NUMBER_50CM && ENCODER_Read(RIGHT) < MAGIC_NUMBER_50CM) {
-        leftPulse = ENCODER_Read(LEFT);
-        rightPulse = ENCODER_Read(RIGHT);
 
         // Le moteur en retard accéllère
         if (leftPulse + SPEED_BUFFER < rightPulse) {
@@ -153,6 +151,9 @@ void avance50cm() {
             vitesseR = vitesseR + KP;
             MOTOR_SetSpeed(RIGHT, vitesseR);
         }
+
+        leftPulse = ENCODER_Read(LEFT);
+        rightPulse = ENCODER_Read(RIGHT);
     }
 
     // Compute la nouvelle position
@@ -296,8 +297,27 @@ void navigation() {
             AX_BuzzerON();
             break;
         }
+    }   
+}
+
+void goHome() {
+    if (compteur_colonne == 0) {
+        tournerDroit90();
+        avance50cm();
+        tournerDroit90();
+    } else {
+        tournerGauche90();
+        avance50cm();
+        tournerGauche90();
     }
-    
+
+    // Go straight home
+    while (compteur_colonne > 0) {
+        avance50cm();
+    }
+    tournerGauche90();
+    tournerGauche90();
+    valEtat = 0;
 }
 
 /* ****************************************************************************
@@ -353,9 +373,7 @@ void loop() {
     switch (valEtat)
     {
         case 1: // Navigation
-            if (compteur_ligne < 3) { // Fonction de démarrage pour le cul de sac potetiel
-                navigation_depart();
-            } else if (compteur_ligne < 9) {
+            if (compteur_ligne < 9) {
                 navigation();
                 printDebugInfo();
             } else {
@@ -364,7 +382,7 @@ void loop() {
             break;
 
         case 2: // We win!
-            speen();
+            goHome();
             break;
         
         default: //Ready to start
