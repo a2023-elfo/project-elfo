@@ -18,8 +18,8 @@ Inclure les librairies de functions que vous voulez utiliser
 Variables globales et defines
 **************************************************************************** */
 // Global speed, love to see it
-const float defaultVitesseR = 0.35;
-const float defaultVitesseL = 0.35;
+const float defaultVitesseR = 0.25;
+const float defaultVitesseL = 0.25;
 const float turningSpeed = 0.2;
 float vitesseR, vitesseL;
 
@@ -260,10 +260,6 @@ void navigation() {
         case WEST:
             computeColonne--;
             break;
-        
-        default:
-            // wtf
-            break;
         }
 
         if (computeColonne == previous_colonne && computeLigne == previous_ligne) {
@@ -289,11 +285,8 @@ void navigation() {
             break;
         
         case EST:
-            if (compteur_colonne == 2) { // colonne de droite
-                tournerGauche90();
-            } else { // Colonne droite ou centre, ya un mur
-                tournerDroit90();
-            }
+            // When in doubt go left
+            tournerGauche90();
             break;
 
         case SUD:
