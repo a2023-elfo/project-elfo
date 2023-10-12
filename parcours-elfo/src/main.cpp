@@ -25,10 +25,10 @@ float vitesseR, vitesseL;
 
 byte valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
 
-const int MAGIC_NUMBER_50CM = 6683;
-const int MAGIC_NUMBER_TURNING_LEFT = 1869;
-const int MAGIC_NUMBER_TURNING_RIGHT = 2015;
-const int SPEED_BUFFER = 65;
+const int MAGIC_NUMBER_50CM = 6583;
+const int MAGIC_NUMBER_TURNING_LEFT = 1769;
+const int MAGIC_NUMBER_TURNING_RIGHT = 1995;
+const int SPEED_BUFFER = 200;
 
 //position
 byte compteur_colonne = 1;
@@ -335,9 +335,15 @@ void printDebugInfo() {
     Serial.println(compteur_colonne);
 }
 
-void loop() {
-    
+void speen() {
+   tournerGauche90();
+   tournerGauche90();
+   tournerGauche90();
+   tournerGauche90();
+   delay(1000);
+}
 
+void loop() {
     switch (valEtat)
     {
         case 1: // Navigation
@@ -349,6 +355,10 @@ void loop() {
             } else {
                 valEtat = 2; // We finished!
             }
+            break;
+
+        case 2: // We win!
+            speen();
             break;
         
         default: //Ready to start
