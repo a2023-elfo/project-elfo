@@ -13,6 +13,8 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <Arduino.h>
 #include <math.h>
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
+#include <SparkFunISL29125.h> //librairie du capteur de couleur
+#include <Wire.h>
 
 /* ****************************************************************************
 Variables globales et defines
@@ -60,6 +62,14 @@ int soundAverage[soundAverageSize] = {0};
 int soundCounter = 0;
 long int firstSpikeTime = 0;
 
+//Couleurs à détecter
+#define rouge 1
+#define vert 2
+#define bleu 3
+#define inconnu 4
+
+byte couleurappercue = 0;
+byte capteCouleur(int);
 /* ****************************************************************************
 Utility functions functions
 **************************************************************************** */
@@ -392,3 +402,5 @@ void loop() {
             break;
     }
 }
+
+//Fonctions du capteur de couleur
