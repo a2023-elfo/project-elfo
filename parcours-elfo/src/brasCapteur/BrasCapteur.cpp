@@ -10,16 +10,17 @@ void BrasEtCapteur::setupBrasEtCapteur(uint8_t moteur, uint8_t pin, uint8_t angl
 
 void BrasEtCapteur::loopBrasEtCapteur(){
     int distance = ROBUS_ReadIR(inputPin);
-    if(distance < distanceVoulu){
-        SERVO_SetAngle(moteur, angle);
-        startTime = millis();
-        brasActione = true;
+    if(!brasActione){
+        if(distance < distanceVoulu){
+            SERVO_SetAngle(moteur, angle);
+            startTime = millis();
+            brasActione = true;
+        } 
     }
     if(brasActione){
         int timeDiff = millis() - startTime;
         if(timeDiff > 3000){
             SERVO_SetAngle(this->moteur, 90);
-            brasActione = false;
         }
     }
 }
