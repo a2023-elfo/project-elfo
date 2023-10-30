@@ -27,53 +27,41 @@ Variables globales et defines
 #define inconnu 7
 
 byte capteCouleur(int);
-int RGB_sensor;
+RGB_sensor;
 
 /* ****************************************************************************
 Utility functions functions
 **************************************************************************** */
-byte capteCouleur(int couleur, int rougeappercu, int vertappercu, int bleuappercu)
+byte capteCouleur(int rougeappercu, int vertappercu, int bleuappercu)
 {
-    couleur = 0;
-    rougeappercu = RGB_sensor.readRed();
-    vertappercu = RGB_sensor.readGreen();
-    bleuappercu = RGB_sensor.readBlue();
-
     if (rougeappercu >= 190 && vertappercu <= 20 && bleuappercu <= 50)
     {
-        couleur = rouge;
-        if (rougeappercu <= 20 && vertappercu >= 90 && bleuappercu <= 60)
-    {
-        couleur = vert;
+        return rouge;
     }
-
-    if (rougeappercu <= 20 && vertappercu <= 70 && bleuappercu >= 120)
+    else if (rougeappercu <= 20 && vertappercu >= 90 && bleuappercu <= 60)
     {
-        couleur = bleu;
+        return vert;
     }
-
-    if (rougeappercu >= 200 && vertappercu >= 200 && bleuappercu <= 20)
+    else if (rougeappercu <= 20 && vertappercu <= 70 && bleuappercu >= 120)
     {
-        couleur = jaune;
+        return bleu;
     }
-    
-    if (rougeappercu <= 30 && vertappercu <= 30 && bleuappercu <= 30)
+    else if (rougeappercu >= 200 && vertappercu >= 200 && bleuappercu <= 20)
     {
-        couleur = noir;
+        return jaune;
     }
-    
-    if (rougeappercu >= 240 && vertappercu >= 240 && bleuappercu >= 240)
+    else if (rougeappercu <= 30 && vertappercu <= 30 && bleuappercu <= 30)
     {
-        couleur = blanc;
+        return noir;
     }
-    
+    else if (rougeappercu >= 240 && vertappercu >= 240 && bleuappercu >= 240)
+    {
+        return blanc;
+    }
     else
     {
-        couleur = inconnu;
+        return inconnu;
     }
-    
-    }
-    return couleur;
 }
 
 /* ****************************************************************************
@@ -81,18 +69,46 @@ Main functions
 **************************************************************************** */
 
 void setup() {
+    // Initialize the serial communication
+    Serial.begin(115200);
 
-    // Initialiser le capteur
-  Serial.begin(115200);
-
-  // Initialize the ISL29125 with simple configuration so it starts sampling
-  if (RGB_sensor.init())
-  {
-    Serial.println("Capteur initialisé!\n\r");
-  }
+    // Initialize the ISL29125 with simple configuration so it starts sampling
+    if (RGB_sensor.init())
+    {
+        Serial.println("Capteur initialisé!\n\r");
+    }
 }
 
-void loop() 
-{
+void loop() {
+    int rougeappercu = RGB_sensor.readRed();
+    int vertappercu = RGB_sensor.readGreen();
+    int bleuappercu = RGB_sensor.readBlue();
 
+    byte couleur = capteCouleur(rougeappercu, vertappercu, bleuappercu);
+    Serial.println("======================");
+    Serial.print("Couleur : ");
+    switch (couleur) {
+        case rouge:
+            Serial.println("Rouge");
+            break;
+        case vert:
+            Serial.println("Vert");
+            break;
+        case bleu:
+            Serial.println("Bleu");
+            break;
+        case jaune:
+            Serial.println("Jaune");
+            break;
+        case noir:
+            Serial.println("Noir");
+            break;
+        case blanc:
+            Serial.println("Blanc");
+            break;
+        default:
+            Serial.println("Inconnu");
+            break;
+    }
+    delay(1000); // Add a delay to avoid excessive serial output
 }
