@@ -8,7 +8,8 @@ class BrasEtCapteur{
         int angle = 90;
         int distanceVoulu =0;
         bool brasActione = false;
-        int delayCounter = 0;
+        int startTime;
+        
     public:
         void setupBrasEtCapteur(uint8_t,uint8_t,uint8_t,int);
         void loopBrasEtCapteur();
