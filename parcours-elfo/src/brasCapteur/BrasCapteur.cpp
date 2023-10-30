@@ -1,13 +1,12 @@
 #include <brasCapteur/BrasCapteur.h>
 
-
 void BrasEtCapteur::setupBrasEtCapteur(uint8_t moteur, uint8_t pin, uint8_t angle, int distance ){
     this->moteur = moteur;
     this->angle = angle;
     this->inputPin = pin;
     this->distanceVoulu = distance;
     SERVO_Enable(moteur);
-    SOFT_TIMER_Enable();
+    SOFT_TIMER_Enable(1);
 }
 
 void BrasEtCapteur::loopBrasEtCapteur(){
@@ -17,10 +16,12 @@ void BrasEtCapteur::loopBrasEtCapteur(){
     }
 
     if(brasActione){
-        SOFT_TIMER_SetCallback(1, moteurRetour);
-    }
-}
-
-void moteurRetour(){
-
+        if(this->delayCounter >= 32000){
+            this->delayCounter++;
+        }
+        else{
+            SERVO_SetAngle(this->moteur, 90);
+            brasActione = false;
+        }    
+    } 
 }

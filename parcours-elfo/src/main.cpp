@@ -12,7 +12,7 @@ Inclure les librairies de functions que vous voulez utiliser
 
 #include <Arduino.h>
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
-
+#include <brasCapteur/BrasCapteur.h>
 
 
 /* ****************************************************************************
@@ -33,6 +33,7 @@ int etat = 0; //0 = arrêt 1 = avance 2 = recule 3 = TourneDroit 4 = TourneGauch
 #define KP = 0.0001
 #define KI = 0.00002
 
+BrasEtCapteur bras = BrasEtCapteur();
 
 /* ****************************************************************************
 Vos propres fonctions sont creees ici
@@ -72,8 +73,8 @@ Fonctions d'initialisation (setup)
 
 void setup(){
   BoardInit();
-  MOTOR_SetSpeed(0, SPEED_GAUCHE);
-  MOTOR_SetSpeed(1, SPEED_DROITE);
+  bras.setupBrasEtCapteur(0,0,0,250);
+  Serial.begin(9600);
 }
 
 
@@ -83,31 +84,7 @@ Fonctions de boucle infini (loop())
 // -> Se fait appeler perpetuellement suite au "setup"
 
 void loop() {
-  // SOFT_TIMER_Update(); // A decommenter pour utiliser des compteurs logiciels
-  delay(10);// Delais pour décharger le CPU
-
-  // Si le bumper avant est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(2)) {
-    MOTOR_SetSpeed(0, -SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, -SPEED_DROITE);
-  }
-
-  // Si le bumper arrière est appuyé, switch les moteurs au reculon
-  if (ROBUS_IsBumper(3)) {
-    MOTOR_SetSpeed(0, SPEED_GAUCHE);
-    MOTOR_SetSpeed(1, SPEED_DROITE);
-  }
-
-  // Si le bumpeur droit est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(1)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0);
-    MOTOR_SetSpeed(1, 0.25);
-  }
-
-  // Si le bumpeur gauche est appuyé, tourne a gauche
-  if (ROBUS_IsBumper(0)) {
-    MOTOR_SetSpeed(MOTEUR_GAUCHE, 0.25);
-    MOTOR_SetSpeed(1, 0);
-  }
-
+  bras.loopBrasEtCapteur();
+  int test = ROBUS_ReadIR(0);
+  Serial.println(test);
 }
