@@ -30,10 +30,6 @@ const int VERTE = 48; // Right
 Moteur moteur;
 Sifflet sifflet;
 
-// Debug variables
-#define ELFO_DEBUG true
-long int lastDebugPrintTime = 0;
-
 /* ****************************************************************************
 Utility functions functions
 **************************************************************************** */
@@ -65,7 +61,7 @@ void loop() {
         default: //Ready to start
             if (sifflet.lireSifflet() || ROBUS_IsBumper(3)) { // On entend le sifflet, ca part!
                 valEtat = 1;
-                moteur.avancerLigneDroite();
+                moteur.avancerLigneDroite(0.4);
             }
             break;
         case 1: // Running
