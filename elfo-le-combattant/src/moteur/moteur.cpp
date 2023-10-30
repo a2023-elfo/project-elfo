@@ -54,7 +54,7 @@ void Moteur::uniMoteurPID(int moteur) {
     // Calcul de la vitesse actuelle
     // On ne veut pas appliquer le PID trop rapidement, donc on le fait seulement à chaque 10ms
     int currentTime = millis();
-    int timeDiffMs = currentTime - *ptrPreviousTime;
+    int timeDiffMs = currentTime - *ptrPreviousTime; 
     if (timeDiffMs >= 500) {
         // Calcul de la vitesse actuelle
         *ptrCurrentSpeed = getDistanceParcourue(moteur) / timeDiffMs * 1000; // cm/s
@@ -64,7 +64,6 @@ void Moteur::uniMoteurPID(int moteur) {
 
         // Calcul de l'intégrale
         *ptrIntegral += error;
-        
 
         // Calcul de la dérivée
         float derivative = (error - *ptrPreviousError)/timeDiffMs * 1000;
@@ -91,6 +90,8 @@ void Moteur::uniMoteurPID(int moteur) {
         
         if (moteur == RIGHT) {
             Serial.println("======================");
+            Serial.print("EncoderRead : ");
+            Serial.println(ENCODER_Read(RIGHT));
             Serial.print("Current speed :");
             Serial.println(*ptrCurrentSpeed);
             Serial.print("Target speed :");
@@ -146,7 +147,7 @@ void Moteur::moteurSetSpeedGauche(float vitesse) {
 }
 
 float Moteur::getDistanceParcourue(int moteur) {
-    return (ENCODER_Read(moteur) / ticksPerRotation) * wheelCircumference;
+    return ENCODER_ReadReset(moteur) * wheelCircumference / ticksPerRotation ;
 }
 
 float Moteur::getDistanceVitesseEnCMparS(float vitesse) {
