@@ -15,7 +15,8 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
 #include <sifflet/sifflet.h>
 #include <moteur/moteur.h>
-#include <brasCapteur/BrasCapteur.h>
+#include <pinceCapteur/PinceCapteur.h>
+#include <brasCapteur/brasCapteur.h>
 
 /* ****************************************************************************
 Variables globales et defines
@@ -31,6 +32,7 @@ const int VERTE = 48; // Right
 Moteur moteur;
 Sifflet sifflet;
 BrasEtCapteur baton;
+Pince pince;
 
 /* ****************************************************************************
 Utility functions functions
@@ -52,11 +54,11 @@ void setup() {
     //capteur de proximite
     pinMode(ROUGE, INPUT);
     pinMode(VERTE, INPUT);
+    
     sifflet.setupSifflet();
     moteur.setupMoteur();
     baton.setupBrasEtCapteur(0);
-    //bras et capteur baton
-
+    pince.setupPince(1);
 
 }
 
