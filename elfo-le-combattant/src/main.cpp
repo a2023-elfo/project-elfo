@@ -15,6 +15,7 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
 #include <sifflet/sifflet.h>
 #include <moteur/moteur.h>
+#include <capteurCouleur/capteurCouleur.h>
 
 /* ****************************************************************************
 Variables globales et defines
@@ -29,6 +30,7 @@ const int VERTE = 48; // Right
 // Déclaration de classes pour les différentes composantes
 Moteur moteur;
 Sifflet sifflet;
+CapteurCouleur capteurCouleur;
 
 /* ****************************************************************************
 Utility functions functions
@@ -53,9 +55,11 @@ void setup() {
     pinMode(VERTE, INPUT);
     sifflet.setupSifflet();
     moteur.setupMoteur();
+    capteurCouleur.setupCapteurCouleur();
 }
 
 void loop() {
+    Serial.print(capteurCouleur.couleurToString(capteurCouleur.lireCouleur()));
     switch (valEtat)
     {   
         default: //Ready to start
