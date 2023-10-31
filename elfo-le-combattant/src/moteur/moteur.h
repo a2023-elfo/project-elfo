@@ -36,7 +36,7 @@ class Moteur {
 
     public:
         void setupMoteur();
-        void avancerLigneDroite(float vitesse = 0.7);
+        void avancerLigneDroite(float vitesse = 0.5);
         void moteurSetSpeedGauche(float vitesse);
         void moteurSetSpeedDroite(float vitesse);
         // Fonction de maintenance du PID demandé
