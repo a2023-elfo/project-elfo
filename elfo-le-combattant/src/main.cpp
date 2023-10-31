@@ -17,6 +17,7 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <moteur/moteur.h>
 #include <pinceCapteur/PinceCapteur.h>
 #include <brasServo/brasServo.h>
+#include <capteurCouleur/capteurCouleur.h>
 
 /* ****************************************************************************
 Variables globales et defines
@@ -31,6 +32,7 @@ const int VERTE = 48; // Right
 // Déclaration de classes pour les différentes composantes
 Moteur moteur;
 Sifflet sifflet;
+CapteurCouleur capteurCouleur;
 BrasServo baton;
 Pince pince;
 
@@ -57,20 +59,28 @@ void setup() {
     
     sifflet.setupSifflet();
     moteur.setupMoteur();
+    capteurCouleur.setupCapteurCouleur();
     baton.setupBrasServo(0);
     pince.setupPince(1);
 
 }
 
 void loop() {
-    moteur.moteurUpdate();
-    baton.batonUpdate();
-
-    if (ROBUS_IsBumper(REAR)) {
-        baton.batonRange();
-    } else if (ROBUS_IsBumper(LEFT)) {
-        baton.batonSortieGauche();
-    } else if (ROBUS_IsBumper(RIGHT)) {
-        baton.batonSortieDroit();
+    Serial.print(capteurCouleur.couleurToString(capteurCouleur.lireCouleur()));
+    switch (valEtat)
+    {   
+        default: //Ready to start
+            if (sifflet.lireSifflet() || ROBUS_IsBumper(3)) { // On entend le sifflet, ca part!
+                valEtat = 1;
+                moteur.avancerLigneDroite(0.4);
+            }
+            break;
+        case 1: // Running
+            moteur.moteurPID();
+            if (faceAuMur() || ROBUS_IsBumper(2)) {
+                moteur.moteurArret();
+                valEtat = 2;
+            }
+            break;
     }
 }
