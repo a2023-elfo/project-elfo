@@ -15,7 +15,7 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
 #include <sifflet/sifflet.h>
 #include <moteur/moteur.h>
-#include <brasCapteur/BrasCapteur.h>
+#include <brasServo/brasServo.h>
 
 /* ****************************************************************************
 Variables globales et defines
@@ -30,7 +30,7 @@ const int VERTE = 48; // Right
 // Déclaration de classes pour les différentes composantes
 Moteur moteur;
 Sifflet sifflet;
-BrasEtCapteur baton;
+BrasServo baton;
 
 /* ****************************************************************************
 Utility functions functions
@@ -54,14 +54,14 @@ void setup() {
     pinMode(VERTE, INPUT);
     sifflet.setupSifflet();
     moteur.setupMoteur();
-    baton.setupBrasEtCapteur(0);
+    baton.setupBrasServo(0);
     //bras et capteur baton
 
 
 }
 
 void loop() {
-    moteur.moteurPID();
+    moteur.moteurUpdate();
     baton.batonUpdate();
 
     if (ROBUS_IsBumper(REAR)) {

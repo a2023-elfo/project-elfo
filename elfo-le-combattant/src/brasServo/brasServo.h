@@ -1,14 +1,14 @@
 #include <LibRobus.h>
 
 
-class BrasEtCapteur{
+class BrasServo {
     private:
         int inputPin = 0;
         int lastCommandTime = 0;
         static const int commandDelay = 100;
       
     public:
-        void setupBrasEtCapteur(uint8_t pin);
+        void setupBrasServo(uint8_t pin);
         void batonSortieGauche();
         void batonSortieDroit();
         void batonRange();
