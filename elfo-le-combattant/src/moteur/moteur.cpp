@@ -110,7 +110,7 @@ void Moteur::uniMoteurPID(int moteur) {
     }
 }
 
-void Moteur::moteurPID() {
+void Moteur::moteurUpdate() {
     uniMoteurPID(LEFT);
     uniMoteurPID(RIGHT);
 }

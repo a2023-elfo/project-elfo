@@ -6,18 +6,23 @@ void BrasEtCapteur::setupBrasEtCapteur(uint8_t pin){
 void BrasEtCapteur::batonSortieGauche(){
     SERVO_Enable(this->inputPin);
     SERVO_SetAngle(this->inputPin,0);
-    delay(100);
-    SERVO_Disable(this->inputPin);
+    lastCommandTime = millis();
 }
 void BrasEtCapteur::batonSortieDroit(){
     SERVO_Enable(this->inputPin);
     SERVO_SetAngle(this->inputPin,170);
-    delay(100);
-    SERVO_Disable(this->inputPin);
+    lastCommandTime = millis();
+
 }
 void BrasEtCapteur::batonRange(){
     SERVO_Enable(this->inputPin);
     SERVO_SetAngle(this->inputPin,90);
-    delay(100);
-    SERVO_Disable(this->inputPin);
+    lastCommandTime = millis();
+}
+
+void BrasEtCapteur::batonUpdate() {
+    if (millis() - lastCommandTime > commandDelay) {
+        SERVO_Disable(this->inputPin);
+        lastCommandTime = 0;
+    }
 }

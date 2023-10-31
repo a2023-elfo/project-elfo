@@ -61,6 +61,9 @@ void setup() {
 }
 
 void loop() {
+    moteur.moteurPID();
+    baton.batonUpdate();
+
     if (ROBUS_IsBumper(REAR)) {
         baton.batonRange();
     } else if (ROBUS_IsBumper(LEFT)) {

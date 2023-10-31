@@ -40,7 +40,7 @@ class Moteur {
         void moteurSetSpeedGauche(float vitesse);
         void moteurSetSpeedDroite(float vitesse);
         // Fonction de maintenance du PID demandé
-        void moteurPID();
+        void moteurUpdate();
         // Fonction pour une décélération jusqu'à l'arrêt
         void moteurArret();
         // Fonction pour arrêt d'urgence
