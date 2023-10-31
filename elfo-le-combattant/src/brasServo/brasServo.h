@@ -5,7 +5,7 @@ class BrasServo {
     private:
         int inputPin = 0;
         int lastCommandTime = 0;
-        static const int commandDelay = 100;
+        static const int commandDelay = 400;
       
     public:
         void setupBrasServo(uint8_t pin);
