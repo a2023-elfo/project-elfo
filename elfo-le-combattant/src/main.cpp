@@ -15,6 +15,7 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
 #include <sifflet/sifflet.h>
 #include <moteur/moteur.h>
+#include <brasCapteur/BrasCapteur.h>
 
 /* ****************************************************************************
 Variables globales et defines
@@ -29,6 +30,7 @@ const int VERTE = 48; // Right
 // Déclaration de classes pour les différentes composantes
 Moteur moteur;
 Sifflet sifflet;
+BrasEtCapteur baton;
 
 /* ****************************************************************************
 Utility functions functions
@@ -40,8 +42,6 @@ bool faceAuMur() {
   return (sensorGauche == LOW || sensorDroit == LOW);
 }
 
-
-
 /* ****************************************************************************
 Main functions
 **************************************************************************** */
@@ -49,27 +49,23 @@ Main functions
 void setup() {
     BoardInit();
     Serial.begin(9600);
+    //capteur de proximite
     pinMode(ROUGE, INPUT);
     pinMode(VERTE, INPUT);
     sifflet.setupSifflet();
     moteur.setupMoteur();
+    baton.setupBrasEtCapteur(0);
+    //bras et capteur baton
+
+
 }
 
 void loop() {
-    switch (valEtat)
-    {   
-        default: //Ready to start
-            if (sifflet.lireSifflet() || ROBUS_IsBumper(3)) { // On entend le sifflet, ca part!
-                valEtat = 1;
-                moteur.avancerLigneDroite(0.4);
-            }
-            break;
-        case 1: // Running
-            moteur.moteurPID();
-            if (faceAuMur() || ROBUS_IsBumper(2)) {
-                moteur.moteurArret();
-                valEtat = 2;
-            }
-            break;
+    if (ROBUS_IsBumper(REAR)) {
+        baton.batonRange();
+    } else if (ROBUS_IsBumper(LEFT)) {
+        baton.batonSortieGauche();
+    } else if (ROBUS_IsBumper(RIGHT)) {
+        baton.batonSortieDroit();
     }
 }
