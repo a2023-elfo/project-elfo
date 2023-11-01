@@ -24,7 +24,7 @@ Variables globales et defines
 **************************************************************************** */
 // Global variables :)
 int valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
-char startColor ='v';
+char startColor =colorSensor.VERT;
 int distanceMurDepart = 0;
 
 //mur
@@ -84,7 +84,7 @@ void loop() {
             }
             break;
         case 1: // Fin du virage, arrive sur le tapis
-            if ('e' == colorSensor.getCouleur()) {
+            if (colorSensor.NOIR == colorSensor.getCouleur()) {
                 moteur.avancerLigneDroite();
                 valEtat++;
             }
@@ -100,7 +100,7 @@ void loop() {
         case 3: // On est arrivé pour faire tomber le verre
 
             // Dépendant de notre couleur, on check un des deux capteurs de distance d'APP1
-            if (startColor == 'v' && digitalRead(VERTE_GAUCHE) == LOW) {
+            if (startColor == colorSensor.VERT && digitalRead(VERTE_GAUCHE) == LOW) {
                 baton.batonSortieGauche();
                 moteur.avancerLigneDroite();
                 // On attends que le capteur est aligné avec l'arrière
@@ -110,7 +110,7 @@ void loop() {
                 delay(200);
                 baton.batonRange();
                 valEtat++;
-            } else if (startColor == 'j' && digitalRead(ROUGE_DROITE) == LOW) {
+            } else if (startColor == colorSensor.JAUNE && digitalRead(ROUGE_DROITE) == LOW) {
                 baton.batonSortieDroit();
                 moteur.avancerLigneDroite();
                 // On attends que le capteur est aligné avec l'arrière
@@ -123,7 +123,7 @@ void loop() {
             }
             break;
         case 4: // On se rend au suiveur de ligne
-            if ('j' == colorSensor.getCouleur()) {
+            if (colorSensor.JAUNE == colorSensor.getCouleur()) {
                 valEtat++;
             }
 
