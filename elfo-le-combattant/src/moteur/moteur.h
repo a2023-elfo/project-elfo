@@ -7,7 +7,7 @@ class Moteur {
 
         // PID Variables 
         const float kp = 0.003;
-        const float ki = 0.0009;
+        const float ki = 0.00025;
         const float kd = 0.0015;
         float integralL;
         float previousErrorL;
@@ -18,7 +18,7 @@ class Moteur {
 
         // Max speed, acceleration et deceleration
         const float acceleration = 0.05;
-        const float deceleration = 0.05;
+        const float deceleration = 0.12;
 
         // Current targets
         float targetSpeedL = 0;

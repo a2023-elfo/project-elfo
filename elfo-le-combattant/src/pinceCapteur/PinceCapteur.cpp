@@ -9,7 +9,7 @@ void Pince::pinceOuvert(){
     delay(100);
     SERVO_Disable(this->inputPin);
 }
-void Pince::Pinceferme(){
+void Pince::pinceFerme(){
     SERVO_Enable(this->inputPin);
     SERVO_SetAngle(this->inputPin,90);
 }

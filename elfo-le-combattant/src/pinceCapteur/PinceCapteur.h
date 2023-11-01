@@ -7,5 +7,5 @@ class Pince{
     public:
         void setupPince(uint8_t pin);
         void pinceOuvert();
-        void Pinceferme();
+        void pinceFerme();
 };
