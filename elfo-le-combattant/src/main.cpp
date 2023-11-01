@@ -17,7 +17,7 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <moteur/moteur.h>
 #include <pinceCapteur/PinceCapteur.h>
 #include <brasServo/brasServo.h>
-#include <capteurCouleur/capteurCouleur.h>
+#include <detecteurCouleur/detecteurCouleur.h>
 
 /* ****************************************************************************
 Variables globales et defines
