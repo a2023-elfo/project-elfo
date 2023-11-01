@@ -4,9 +4,9 @@
 // rouge = r
 // jaune = j 
 // vert = v 
-// bleu = b 
-// blanc = w 
-// erreur = e
+// bleu = e 
+// blanc = j 
+// noir et erreur = e
 void detecteurCouleur::setup(){
     Serial.begin(9600);
   
@@ -17,7 +17,7 @@ void detecteurCouleur::setup(){
     while (1);
   }
 }
-void detecteurCouleur::getCouleur(char& color ){
+char detecteurCouleur::getCouleur(){
     uint16_t r, g, b, c, colorTemp, lux;
   
     tcs.getRawData(&r, &g, &b, &c);
@@ -25,17 +25,17 @@ void detecteurCouleur::getCouleur(char& color ){
     lux = tcs.calculateLux(r, g, b);
 
     if(r == 1 && g  == 0 && b  == 0){
-        color = 'r';
+        return 'r';
     }else if (r == 1 && g == 1 && b == 0){
-        color = 'j';
+        return 'j';
     }else if (r  == 0 && g == 1 && b  == 0){
-        color = 'v';
+        return 'v';
     }else if (r  == 0 && g  == 0 && b == 1){
-        color = 'b';
+        return 'b';
     }else if (r == 1 && g == 1 && b == 1){
-        color = 'w';
+        return 'w';
     }else{
-        color = 'e';
+        return 'e';
     }
 
       Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.print(" K - ");

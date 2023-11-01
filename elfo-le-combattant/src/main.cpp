@@ -23,8 +23,8 @@ Inclure les librairies de functions que vous voulez utiliser
 Variables globales et defines
 **************************************************************************** */
 // Global variables :)
-byte valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
-byte startColor = 7;
+int valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
+char startColor ='v';
 int distanceMurDepart = 0;
 
 //mur
@@ -36,7 +36,7 @@ const int VERTE_DROITE = 48; // Back droite
 // Déclaration de classes pour les différentes composantes
 Moteur moteur;
 Sifflet sifflet;
-CapteurCouleur capteurCouleur;
+detecteurCouleur colorSensor = detecteurCouleur();
 BrasServo baton;
 Pince pince;
 
@@ -55,7 +55,7 @@ void setup() {
     
     sifflet.setupSifflet();
     moteur.setupMoteur();
-    capteurCouleur.setupCapteurCouleur();
+    colorSensor.setup();
     baton.setupBrasServo(0);
     pince.setupPince(1);
 
@@ -70,7 +70,7 @@ void loop() {
         case -1: // Attente de départ
             if (ROBUS_IsBumper(REAR)) { 
                 valEtat++;
-                startColor = capteurCouleur.lireCouleur();
+                startColor = colorSensor.getCouleur();
                 distanceMurDepart = ROBUS_ReadIR(3);
                 moteur.avancerLigneDroite();
             }
@@ -84,7 +84,7 @@ void loop() {
             }
             break;
         case 1: // Fin du virage, arrive sur le tapis
-            if (capteurCouleur.NOIR == capteurCouleur.lireCouleur()) {
+            if ('e' == colorSensor.getCouleur()) {
                 moteur.avancerLigneDroite();
                 valEtat++;
             }
@@ -100,7 +100,7 @@ void loop() {
         case 3: // On est arrivé pour faire tomber le verre
 
             // Dépendant de notre couleur, on check un des deux capteurs de distance d'APP1
-            if (startColor == capteurCouleur.VERT && digitalRead(VERTE_GAUCHE) == LOW) {
+            if (startColor == 'v' && digitalRead(VERTE_GAUCHE) == LOW) {
                 baton.batonSortieGauche();
                 moteur.avancerLigneDroite();
                 // On attends que le capteur est aligné avec l'arrière
@@ -110,7 +110,7 @@ void loop() {
                 delay(200);
                 baton.batonRange();
                 valEtat++;
-            } else if (startColor == capteurCouleur.JAUNE && digitalRead(ROUGE_DROITE) == LOW) {
+            } else if (startColor == 'j' && digitalRead(ROUGE_DROITE) == LOW) {
                 baton.batonSortieDroit();
                 moteur.avancerLigneDroite();
                 // On attends que le capteur est aligné avec l'arrière
@@ -123,7 +123,7 @@ void loop() {
             }
             break;
         case 4: // On se rend au suiveur de ligne
-            if (capteurCouleur.BLANC == capteurCouleur.lireCouleur()) {
+            if ('j' == colorSensor.getCouleur()) {
                 valEtat++;
             }
 

@@ -8,6 +8,6 @@ class detecteurCouleur{
     
     public:
     void setup();
-    void getCouleur(char&);
+    char getCouleur();
     
 };
