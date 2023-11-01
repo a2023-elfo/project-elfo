@@ -23,15 +23,15 @@ Inclure les librairies de functions que vous voulez utiliser
 Variables globales et defines
 **************************************************************************** */
 // Global variables :)
-int valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
+int valEtat = -1; // 0 = Ready to start, 1 = running, 2 = done
 char startColor ='v';
 int distanceMurDepart = 0;
 
 //mur
-const int ROUGE_GAUCHE = 49; // Front gauche
-const int VERTE_GAUCHE = 48; // Back gauche
-const int ROUGE_DROITE = 49; // Front droite
-const int VERTE_DROITE = 48; // Back droite
+const int ROUGE_DROITE = 45; // Front droite
+const int VERTE_DROITE = 44; // Back droite
+const int ROUGE_GAUCHE = 48; // Front gauche
+const int VERTE_GAUCHE = 49; // Back gauche
 
 // Déclaration de classes pour les différentes composantes
 Moteur moteur;
