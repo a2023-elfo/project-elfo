@@ -55,7 +55,7 @@ void Moteur::uniMoteurPID(int moteur) {
     // On ne veut pas appliquer le PID trop rapidement, donc on le fait seulement à chaque 10ms
     int currentTime = millis();
     int timeDiffMs = currentTime - *ptrPreviousTime; 
-    if (timeDiffMs >= 500) {
+    if (timeDiffMs >= 125) {
         // Calcul de la vitesse actuelle
         *ptrCurrentSpeed = getDistanceParcourue(moteur) / timeDiffMs * 1000; // cm/s
         
@@ -110,7 +110,7 @@ void Moteur::uniMoteurPID(int moteur) {
     }
 }
 
-void Moteur::moteurPID() {
+void Moteur::moteurUpdate() {
     uniMoteurPID(LEFT);
     uniMoteurPID(RIGHT);
 }
