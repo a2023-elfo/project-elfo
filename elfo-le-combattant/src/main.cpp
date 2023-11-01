@@ -59,14 +59,14 @@ void loop() {
     switch (valEtat)
     {   
         default: //Ready to start
-            if (sifflet.lireSifflet() || ROBUS_IsBumper(3)) { // On entend le sifflet, ca part!
+            if (ROBUS_IsBumper(3)) { // On entend le sifflet, ca part!
                 valEtat = 1;
-                moteur.avancerLigneDroite(0.4);
+                moteur.avancerLigneDroite(0.4);             
             }
             break;
         case 1: // Running
             moteur.moteurPID();
-            if (faceAuMur() || ROBUS_IsBumper(2)) {
+            if (ROBUS_IsBumper(2)) {
                 moteur.moteurArret();
                 valEtat = 2;
             }

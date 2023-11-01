@@ -3,12 +3,12 @@ class Moteur {
     private:
         const float wheelCircumference = 23.938936; // cm
         const int ticksPerRotation = 3200;
-        const float maxSpeedCMparS = 100;
+        const float maxSpeedCMparS = 75;
 
         // PID Variables 
-        const float kp = 0.3;
-        const float ki = 0;
-        const float kd = 0;
+        const float kp = 0.003;
+        const float ki = 0.0009;
+        const float kd = 0.0015;
         float integralL;
         float previousErrorL;
         int previousTimeL;
@@ -17,7 +17,7 @@ class Moteur {
         int previousTimeR;
 
         // Max speed, acceleration et deceleration
-        const float acceleration = 0.025;
+        const float acceleration = 0.05;
         const float deceleration = 0.05;
 
         // Current targets
