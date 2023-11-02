@@ -23,7 +23,7 @@ Inclure les librairies de functions que vous voulez utiliser
 Variables globales et defines
 **************************************************************************** */
 // Global variables :)
-int valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
+int valEtat = -1; // 0 = Ready to start, 1 = running, 2 = done
 char startColor ='v';
 int distanceMurDepart = 0;
 
