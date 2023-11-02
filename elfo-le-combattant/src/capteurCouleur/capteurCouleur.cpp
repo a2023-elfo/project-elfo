@@ -11,7 +11,7 @@ void CapteurCouleur::setupCapteurCouleur() {
 }
 
 uint8_t CapteurCouleur::lireCouleur() {
-    uint16_t r, g, b, c, colorTemp, lux;
+    uint16_t r, g, b, c, colorTemp;
     
     tcs.getRawData(&r, &g, &b, &c);
     colorTemp = tcs.calculateColorTemperature(r, g, b);
