@@ -69,12 +69,7 @@ void loop() {
     baton.batonUpdate();
 
     switch (valEtat)
-    {   
-        case -2:
-            Serial.println(capteurCouleur.couleurToString(capteurCouleur.lireCouleur()));
-            delay(2000);
-            break;
-
+    {
         case -1: // Attente de départ
             if (ROBUS_IsBumper(REAR)) { 
                 valEtat=-2;

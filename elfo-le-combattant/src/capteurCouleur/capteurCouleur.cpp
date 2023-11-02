@@ -20,16 +20,19 @@ uint8_t CapteurCouleur::lireCouleur() {
     // YELLOW was around 2000
     // GREEN was around 4500
     // BLUE was around 2600+
+    Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.println(" K");
 
     // Return the most prominent color as a uint8_t
     // use color temp in decimal base
-    if (colorTemp > 0 && colorTemp < 2100) {
+    if (colorTemp > 0 && colorTemp < 2150) {
         return JAUNE;
-    } else if (colorTemp > 2100 && colorTemp < 4000) {
-        return BLEU;
-    } else if (colorTemp > 4000 && colorTemp < 6000) {
+    } else if (colorTemp > 2150 && colorTemp < 3200) {
+        return BLANC;
+    } else if (colorTemp > 3200 && colorTemp < 6000) {
         return VERT;
-    } else if (colorTemp > 6000) {
+    } else if (colorTemp > 6000 && colorTemp < 20000) {
+        return VERT;
+    } else if (colorTemp > 20000) {
         return ROUGE;
     } else {
         return INCONNU;
