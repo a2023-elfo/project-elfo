@@ -1,9 +1,9 @@
-#include <SparkFunISL29125.h>
+#include <Adafruit_TCS34725.h>
 
 class CapteurCouleur {
     private:
-        SFE_ISL29125 RGB_sensor;
-
+        Adafruit_TCS34725 tcs;
+    
     public:
         static const uint8_t ROUGE = 1;
         static const uint8_t VERT = 2;

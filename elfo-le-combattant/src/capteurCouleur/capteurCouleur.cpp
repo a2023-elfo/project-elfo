@@ -1,38 +1,36 @@
 #include <capteurCouleur/capteurCouleur.h>
-#include <SparkFunISL29125.h>
 
 void CapteurCouleur::setupCapteurCouleur() {
-    RGB_sensor.init();
+    tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+    
+    if (tcs.begin()) {
+        Serial.println("Found sensor");
+    } else {
+        Serial.println("Cry, no color for you");
+    }
 }
 
 uint8_t CapteurCouleur::lireCouleur() {
-    int rougeappercu = RGB_sensor.readRed();
-    int vertappercu = RGB_sensor.readGreen();
-    int bleuappercu = RGB_sensor.readBlue();
+    uint16_t r, g, b, c, colorTemp, lux;
+    
+    tcs.getRawData(&r, &g, &b, &c);
+    colorTemp = tcs.calculateColorTemperature(r, g, b);
 
-    if (rougeappercu >= 190 && vertappercu <= 20 && bleuappercu <= 50)
-    {
-        return ROUGE;
-    }
-    else if (rougeappercu <= 20 && vertappercu >= 90 && bleuappercu <= 60)
-    {
-        return VERT;
-    }
-    else if (rougeappercu <= 20 && vertappercu <= 70 && bleuappercu >= 120)
-    {
-        return BLEU;
-    }
-    else if (rougeappercu >= 200 && vertappercu >= 200 && bleuappercu <= 20)
-    {
+    // RED was around 44800
+    // YELLOW was around 2000
+    // GREEN was around 4500
+    // BLUE was around 2600+
+
+    // Return the most prominent color as a uint8_t
+    // use color temp in decimal base
+    if (colorTemp > 0 && colorTemp < 2100) {
         return JAUNE;
-    }
-    else if (rougeappercu <= 30 && vertappercu <= 30 && bleuappercu <= 30)
-    {
-        return NOIR;
-    }
-    else if (rougeappercu >= 240 && vertappercu >= 240 && bleuappercu >= 240)
-    {
-        return BLANC;
+    } else if (colorTemp > 2100 && colorTemp < 4000) {
+        return BLEU;
+    } else if (colorTemp > 4000 && colorTemp < 6000) {
+        return VERT;
+    } else if (colorTemp > 6000) {
+        return ROUGE;
     } else {
         return INCONNU;
     }

@@ -70,11 +70,14 @@ void loop() {
 
     switch (valEtat)
     {   
+        case -2:
+            Serial.println(capteurCouleur.couleurToString(capteurCouleur.lireCouleur()));
+            delay(2000);
+            break;
+
         case -1: // Attente de départ
             if (ROBUS_IsBumper(REAR)) { 
-                valEtat++;
-                distanceMurDepart = ROBUS_ReadIR(3);
-                moteur.avancerLigneDroite(0.2);
+                valEtat=-2;
             }
             break;
         case 0: // Vers section 1
