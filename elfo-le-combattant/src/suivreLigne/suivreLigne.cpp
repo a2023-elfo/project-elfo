@@ -10,10 +10,10 @@ void arret(){
 }
 void correctiong(){
     MOTOR_SetSpeed(LEFT, 0);
-    MOTOR_SetSpeed(RIGHT, 0.3);
+    MOTOR_SetSpeed(RIGHT, 0.25);
 }
 void correctiond(){    
-    MOTOR_SetSpeed(LEFT, 0.3);
+    MOTOR_SetSpeed(LEFT, 0.25);
     MOTOR_SetSpeed(RIGHT, 0);
     }
 void SuivreLigne ::suivreLigne(){
