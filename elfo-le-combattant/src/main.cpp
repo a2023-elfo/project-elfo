@@ -32,9 +32,102 @@ int tempsEnSecPourLeVirage = 3;
 int compteur_tour = 1;
 float floatTargetSpeed = 0.23;
 int straighawayCounter=0;
+int currentTurn = 0;
 float distanceAParcourirCM = 30.25 * 8;
 float parcourirEnSec = 6;
 
+
+// LOL
+// void avance(){
+//     MOTOR_SetSpeed(LEFT, 0.2);
+//     MOTOR_SetSpeed(RIGHT, 0.2);
+
+
+// }
+
+void dash(){
+     MOTOR_SetSpeed(LEFT, 0.4);
+    MOTOR_SetSpeed(RIGHT, 0.4);
+    
+
+}
+
+void dashdroit(){
+    MOTOR_SetSpeed(LEFT, 0.5);
+    MOTOR_SetSpeed(RIGHT, 0.05);
+    
+
+}
+
+void correction_shortcut_d(){
+    MOTOR_SetSpeed(LEFT, 0.2);
+    MOTOR_SetSpeed(RIGHT, 0.05);
+}
+
+void correction_shortcut_d_lente(){
+    MOTOR_SetSpeed(LEFT, 0.3);
+    MOTOR_SetSpeed(RIGHT, 0.2);   
+}
+
+
+void correction_shortcut_g(){
+    MOTOR_SetSpeed(LEFT, 0.05);
+    MOTOR_SetSpeed(RIGHT, 0.3);   
+}
+
+void shortcut(){
+
+    
+
+
+    if(ROBUS_ReadIR(3) < 560 &&  ROBUS_ReadIR(3) > 200){
+        correction_shortcut_d();
+               
+    }   
+    
+    
+    if(ROBUS_ReadIR(3) > 640){
+        correction_shortcut_g();
+        
+        
+    }
+    if(ROBUS_ReadIR(3) >= 560 && ROBUS_ReadIR(3) <= 640){
+        dash();
+        
+        
+    }
+
+    if (ROBUS_ReadIR(3) <= 200){
+
+        correction_shortcut_d();
+    }
+
+
+    
+    
+}
+
+void shortcut_complet_jump(){
+    
+MOTOR_SetSpeed(LEFT, 0.2);
+MOTOR_SetSpeed(RIGHT, 0.2);
+
+if(ROBUS_ReadIR(3) < 100){
+    MOTOR_SetSpeed(LEFT, 0.6);
+    MOTOR_SetSpeed(RIGHT, -0.2);
+    delay(350);
+    MOTOR_SetSpeed(LEFT, 0.2);
+    MOTOR_SetSpeed(RIGHT, 0.2);
+
+    if (ROBUS_ReadIR(3) > 400){
+        shortcut();
+        if (ROBUS_ReadIR(3) < 25 && ROBUS_ReadIR(0) < 25)
+            {/*hard coder le reste du virage ici apres avoir sorti du shortcut*/
+            }
+    }
+
+}
+}
 
 //mur
 const int ROUGE_GAUCHE = 48; // Back gauche
@@ -72,7 +165,9 @@ void setup() {
 }
 
 void loop() {
-    moteur.moteurUpdate();
+    if (valEtat != 69) {
+        moteur.moteurUpdate();
+    }
     baton.batonUpdate();
     pince.pinceOuvert();
     switch (valEtat)
@@ -177,8 +272,12 @@ void loop() {
                 // Fuck le verre, on veut juste faire un tour.
                 allPurpousTimer = 0;
                 moteur.moteurArret();
-                moteur.setTargetSpeedDroite(distanceAParcourirCM/parcourirEnSec);
-                moteur.setTargetSpeedGauche(distanceAParcourirCM/parcourirEnSec);
+                if (currentTurn == 1) {
+                    valEtat = 69;
+                } else {
+                    moteur.setTargetSpeedDroite(distanceAParcourirCM/parcourirEnSec);
+                    moteur.setTargetSpeedGauche(distanceAParcourirCM/parcourirEnSec);
+                }
                 valEtat++;
             }
             break;
@@ -198,8 +297,8 @@ void loop() {
 
             if (moteur.getDistanceParcourueDroiteEnCM() >= 230) {
                 // On vire 180 degreee pour le big virage apères le shortcut
-                int distanceRoueDroitePouces = 2;
-                int distanceRoueGauchePouces = 3;
+                int distanceRoueDroitePouces = 1;
+                int distanceRoueGauchePouces = 2;
                 float circonferenceRoueDroiteCM = (distanceRoueDroitePouces * 30.5 + 6) * 2 * PI;
                 float circonferenceRoueGaucheCM = (distanceRoueGauchePouces * 30.5 - 6) * 2 * PI;
 
@@ -227,9 +326,16 @@ void loop() {
                 moteur.avancerLigneDroite();
                 valEtat = 0;
                 // On a fini, on refait le tour
+                currentTurn++;
             }
 
             break;
+
+        case 69:
+            shortcut_complet_jump();
+            break;
+
+
         default: //Ready to start
             Serial.print("default");
             break;
