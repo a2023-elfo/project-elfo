@@ -16,9 +16,10 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <sifflet/sifflet.h>
 #include <moteur/moteur.h>
 #include <pinceCapteur/PinceCapteur.h>
-#include <brasServo/brasServo.h>
+//#include <brasServo/brasServo.h>
 #include <detecteurCouleur/detecteurCouleur.h>
-
+#include <suivreLigne/suivreLigne.h>
+#include <shortcut/shortcut.h>
 /* ****************************************************************************
 Variables globales et defines
 **************************************************************************** */
@@ -37,8 +38,10 @@ const int VERTE_DROITE = 48; // Back droite
 Moteur moteur;
 Sifflet sifflet;
 detecteurCouleur colorSensor = detecteurCouleur();
-BrasServo baton;
+//BrasServo baton;
 Pince pince;
+SuivreLigne suivreLigne;
+Shortcut shortcut;
 
 /* ****************************************************************************
 Main functions
@@ -56,80 +59,12 @@ void setup() {
     sifflet.setupSifflet();
     moteur.setupMoteur();
     colorSensor.setup();
-    baton.setupBrasServo(0);
+    //baton.setupBrasServo(0);
     pince.setupPince(1);
 
 }
 
 void loop() {
-    moteur.moteurUpdate();
-    baton.batonUpdate();
-
-    switch (valEtat)
-    {   
-        case -1: // Attente de départ
-            if (ROBUS_IsBumper(REAR)) { 
-                valEtat++;
-                startColor = colorSensor.getCouleur();
-                distanceMurDepart = ROBUS_ReadIR(3);
-                moteur.avancerLigneDroite();
-            }
-            break;
-        case 0: // Vers section 1
-            if (ROBUS_ReadIR(3) + 200 < distanceMurDepart) {
-                // Moteur commence à virer à droite
-                // TODO faire une vraie fonction pour ceci lol xd mdr
-                moteur.moteurSetSpeedDroite(0.7);
-                valEtat++;
-            }
-            break;
-        case 1: // Fin du virage, arrive sur le tapis
-            if ('e' == colorSensor.getCouleur()) {
-                moteur.avancerLigneDroite();
-                valEtat++;
-            }
-            break;
-        case 2: // Commence le deuxieme virage
-            if (ROBUS_ReadIR(3) < distanceMurDepart + 100) {
-                // Moteur commence à virer à droite
-                // TODO faire une vraie fonction pour ceci lol xd mdr
-                moteur.avancerLigneDroite(0.3);
-                valEtat++;
-            }
-            break;
-        case 3: // On est arrivé pour faire tomber le verre
-
-            // Dépendant de notre couleur, on check un des deux capteurs de distance d'APP1
-            if (startColor == 'v' && digitalRead(VERTE_GAUCHE) == LOW) {
-                baton.batonSortieGauche();
-                moteur.avancerLigneDroite();
-                // On attends que le capteur est aligné avec l'arrière
-                while(digitalRead(ROUGE_GAUCHE) == HIGH) {
-                    delay(0);
-                }
-                delay(200);
-                baton.batonRange();
-                valEtat++;
-            } else if (startColor == 'j' && digitalRead(ROUGE_DROITE) == LOW) {
-                baton.batonSortieDroit();
-                moteur.avancerLigneDroite();
-                // On attends que le capteur est aligné avec l'arrière
-                while(digitalRead(VERTE_GAUCHE) == HIGH) {
-                    delay(0);
-                }
-                delay(200);
-                baton.batonRange();
-                valEtat++;
-            }
-            break;
-        case 4: // On se rend au suiveur de ligne
-            if ('j' == colorSensor.getCouleur()) {
-                valEtat++;
-            }
-
-            break;
-        default: //Ready to start
-            Serial.print("default");
-            break;
-    }
+    shortcut.shortcut();
+    Serial.println(ROBUS_ReadIR(3));
 }
