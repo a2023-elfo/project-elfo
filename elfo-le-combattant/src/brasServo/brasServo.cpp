@@ -2,6 +2,7 @@
 
 void BrasServo::setupBrasServo(uint8_t pin){
     this->inputPin = pin;
+    this->batonRange();
 }
 void BrasServo::batonSortieGauche(){
     SERVO_Enable(this->inputPin);
