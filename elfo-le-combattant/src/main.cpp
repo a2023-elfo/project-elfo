@@ -23,7 +23,7 @@ Inclure les librairies de functions que vous voulez utiliser
 Variables globales et defines
 **************************************************************************** */
 // Global variables :)
-byte valEtat = 0; // 0 = Ready to start, 1 = running, 2 = done
+int valEtat = -1; // 0 = Ready to start, 1 = running, 2 = done
 byte startColor = 7;
 int distanceMurDepart = 0;
 
@@ -72,31 +72,33 @@ void loop() {
                 valEtat++;
                 startColor = capteurCouleur.lireCouleur();
                 distanceMurDepart = ROBUS_ReadIR(3);
-                moteur.avancerLigneDroite();
+                moteur.avancerLigneDroite(0.4);
             }
             break;
         case 0: // Vers section 1
-            if (ROBUS_ReadIR(3) + 200 < distanceMurDepart) {
+            if (ROBUS_ReadIR(3) < 100) {
                 // Moteur commence à virer à droite
                 // TODO faire une vraie fonction pour ceci lol xd mdr
-                moteur.moteurSetSpeedDroite(0.7);
+                
+                /*moteur.moteurSetSpeedDroite(0.11);
+                moteur.moteurSetSpeedGauche(0.162);*/
                 valEtat++;
             }
             break;
         case 1: // Fin du virage, arrive sur le tapis
-            if (capteurCouleur.NOIR == capteurCouleur.lireCouleur()) {
+            if (true==false) {
                 moteur.avancerLigneDroite();
                 valEtat++;
             }
             break;
-        case 2: // Commence le deuxieme virage
+        /*case 2: // Commence le deuxieme virage
             if (ROBUS_ReadIR(3) < distanceMurDepart + 100) {
                 // Moteur commence à virer à droite
                 // TODO faire une vraie fonction pour ceci lol xd mdr
                 moteur.avancerLigneDroite(0.3);
                 valEtat++;
             }
-            break;
+            break;*/
         case 3: // On est arrivé pour faire tomber le verre
 
             // Dépendant de notre couleur, on check un des deux capteurs de distance d'APP1
