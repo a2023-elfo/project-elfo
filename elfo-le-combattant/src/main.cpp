@@ -113,13 +113,38 @@ Main functions
 
 void setup() {
     BoardInit();
-    Serial.begin(9600);
+   Serial.begin(9600);
     pinMode(ROUGE, INPUT);
     pinMode(VERTE, INPUT);
     pinMode(PIN_5KHZ, INPUT);
+
+   pinMode(A2, INPUT);
+
     // Set default speeds
+
     vitesseL = defaultVitesseL;
     vitesseR = defaultVitesseR;
+}
+
+void avance(){
+    MOTOR_SetSpeed(LEFT, 0.2);
+    MOTOR_SetSpeed(RIGHT, 0.2);
+
+
+}
+
+void dash(){
+     MOTOR_SetSpeed(LEFT, 0.4);
+    MOTOR_SetSpeed(RIGHT, 0.4);
+    
+
+}
+
+void dashdroit(){
+    MOTOR_SetSpeed(LEFT, 0.5);
+    MOTOR_SetSpeed(RIGHT, 0.05);
+    
+
 }
 
 void printDebugInfo() {
@@ -132,17 +157,162 @@ void printDebugInfo() {
     
 }
 
-void loop() {
-    if (ELFO_DEBUG) {
-        printDebugInfo();
-    }
+
+void correction_shortcut_d(){
+
+    MOTOR_SetSpeed(LEFT, 0.2);
+    MOTOR_SetSpeed(RIGHT, 0.05);
     
-    switch (valEtat)
-    {   
-        default: //Ready to start
-            if (sifflet() || ROBUS_IsBumper(3)) { // On entend le sifflet, ca part!
-                valEtat = 1;
-            }
-            break;
+    
+    
+}
+
+void correction_shortcut_d_lente(){
+
+    MOTOR_SetSpeed(LEFT, 0.3);
+    MOTOR_SetSpeed(RIGHT, 0.2);
+    
+    
+    
+}
+
+
+void correction_shortcut_g(){
+
+    MOTOR_SetSpeed(LEFT, 0.05);
+    MOTOR_SetSpeed(RIGHT, 0.3);
+    
+    
+
+
+    
+}
+//ne pas utiliser ce suivre_ligne
+void suivre_ligne(){
+
+    //faudra rajouter un etat dans la fonction main pour cette fonction avec le capteur de couleur
+    //faudra aussi rajouter fonction de contournement
+    
+    int voltage = analogRead(A2);
+    
+    if (voltage >= 980 && voltage <= 1024){
+
+        dash();
+    
+    
+    
     }
+    if (voltage >= 0 && voltage <= 20){
+    //Aucun
+    //detecte du noir partout, ne va pas arriver
+    arret();
+    }
+    if (voltage >= 560 && voltage <= 600){
+    //1
+    correction_shortcut_d();
+    
+    
+    //ligne sur le 1 et 2, ne va pas arriver
+    }
+    if (voltage >= 270 && voltage <= 310){
+    //2
+    arret();
+    //ligne sur le 1 et 3, ne va pas arriver
+    }
+    if (voltage >= 125 && voltage <= 165){
+    //3
+    correction_shortcut_g();
+    
+    
+    //ligne sur le 2 et 3, ne vas pas arrivé
+    }
+    if (voltage >= 860 && voltage <= 900){
+    //1,2
+    //ligne sur le 1, tourne a droite
+    
+    correction_shortcut_g();
+    
+    
+    
+    }
+    if (voltage >= 420 && voltage <= 460){
+    //2,3
+    //ligne sur le 3, tourne a gauche
+    
+    correction_shortcut_d();
+    
+    
+    
+    
+    }
+    if (voltage >= 710 && voltage <= 755){
+    //1,3
+    // ligne sur le 2, ce qu on veut
+    // on veut que le robot aille droit
+    delay(50);
+    avance();
+
+        
+   
+
+    }
+  
+
+}
+
+
+
+void shortcut(){
+
+    
+
+
+    if(ROBUS_ReadIR(3) < 560 &&  ROBUS_ReadIR(3) > 200){
+        correction_shortcut_d();
+               
+    }   
+    
+    
+    if(ROBUS_ReadIR(3) > 640){
+        correction_shortcut_g();
+        
+        
+    }
+    if(ROBUS_ReadIR(3) >= 560 && ROBUS_ReadIR(3) <= 640){
+        dash();
+        
+        
+    }
+
+    if (ROBUS_ReadIR(3) <= 200){
+
+        correction_shortcut_d();
+    }
+
+
+    
+    
+}
+
+void shortcut_complet_jump(){
+    
+avance();// remplacer par avancer pid
+if(ROBUS_ReadIR(3) < 100){
+    MOTOR_SetSpeed(LEFT, 0.6);
+    MOTOR_SetSpeed(RIGHT, -0.2);
+    delay(350);
+    avance();
+    if (ROBUS_ReadIR(3) > 400){
+        shortcut();
+        if (ROBUS_ReadIR(3) < 25 && ROBUS_ReadIR(0) < 25)
+            {/*hard coder le reste du virage ici apres avoir sorti du shortcut*/
+            }
+    }
+
+}
+}
+void loop() {
+
+shortcut_complet_jump();
+
 }
