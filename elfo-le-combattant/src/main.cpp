@@ -222,14 +222,12 @@ void loop() {
             break;
             
         case 6: 
-            if (allPurpousTimer + 2000 < millis()) {
+            if (allPurpousTimer + 3000 < millis()) {
                 //Le virage est terminé, full speed ahead pour le jump.
                 moteur.avancerLigneDroite();
                 valEtat = 0;
                 // On a fini, on refait le tour
             }
-            
-            
 
             break;
         default: //Ready to start
