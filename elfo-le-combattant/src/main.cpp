@@ -14,12 +14,11 @@ Inclure les librairies de functions que vous voulez utiliser
 #include <math.h>
 #include <LibRobus.h> // Essentielle pour utiliser RobUS
 #include <sifflet/sifflet.h>
-#include <moteur/moteur.h>
 #include <pinceCapteur/PinceCapteur.h>
 //#include <brasServo/brasServo.h>
 #include <detecteurCouleur/detecteurCouleur.h>
 #include <suivreLigne/suivreLigne.h>
-#include <shortcut/shortcut.h>
+#include <moteur/moteur.h>
 /* ****************************************************************************
 Variables globales et defines
 **************************************************************************** */
@@ -41,7 +40,6 @@ detecteurCouleur colorSensor = detecteurCouleur();
 //BrasServo baton;
 Pince pince;
 SuivreLigne suivreLigne;
-Shortcut shortcut;
 
 /* ****************************************************************************
 Main functions
@@ -65,6 +63,16 @@ void setup() {
 }
 
 void loop() {
-    shortcut.shortcut();
+    moteur.moteurUpdate();
+    if(ROBUS_ReadIR(3) < 275){
+        moteur.moteurSetSpeedGauche(0.3);
+    }
+    if(ROBUS_ReadIR(3) > 325){
+        moteur.moteurSetSpeedDroite(0.3);
+    }
+    else{
+        moteur.avancerLigneDroite(0.2);
+    }
+    
     Serial.println(ROBUS_ReadIR(3));
 }
