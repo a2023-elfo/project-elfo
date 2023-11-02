@@ -9,21 +9,21 @@ void Moteur::setupMoteur() {
 void Moteur::resetVariablesMoteur(int moteur) {
     // Reset the variables
     if (moteur != RIGHT) {
-        ENCODER_Reset(LEFT);
         integralL = 0;
         previousErrorL = 0;
         previousTimeL = 0;
         targetSpeedL = 0;
         currentSpeedL = 0;
+        distanceL = 0;
     }
 
     if (moteur != LEFT) {
-        ENCODER_Reset(RIGHT);
         integralR = 0;
         previousErrorR = 0;
         previousTimeR = 0;
         targetSpeedR = 0;
         currentSpeedR = 0;
+        distanceR = 0;
     }
 }
 
@@ -88,7 +88,7 @@ void Moteur::uniMoteurPID(int moteur) {
         *ptrPreviousError = error;
         *ptrPreviousTime = currentTime;
         
-        if (moteur == RIGHT) {
+        if (moteur == 8) {
             Serial.println("======================");
             Serial.print("EncoderRead : ");
             Serial.println(ENCODER_Read(RIGHT));
@@ -147,9 +147,33 @@ void Moteur::moteurSetSpeedGauche(float vitesse) {
 }
 
 float Moteur::getDistanceParcourue(int moteur) {
+    if (moteur == RIGHT) {
+        distanceR += ENCODER_Read(RIGHT);
+    } else {
+        distanceL += ENCODER_Read(LEFT);
+    }
+
     return ENCODER_ReadReset(moteur) * wheelCircumference / ticksPerRotation ;
 }
 
 float Moteur::getDistanceVitesseEnCMparS(float vitesse) {
     return vitesse * maxSpeedCMparS;
+}
+
+float Moteur::getDistanceParcourueGaucheEnCM() {
+    Serial.print("Distance gauche : ");
+    Serial.println(distanceL);
+    return distanceL * wheelCircumference / ticksPerRotation;
+}
+
+float Moteur::getDistanceParcourueDroiteEnCM() {
+    return distanceR * wheelCircumference / ticksPerRotation;
+}
+
+void Moteur::setTargetSpeedDroite(float targetCmParSec) {
+    targetSpeedR = targetCmParSec;
+}
+
+void Moteur::setTargetSpeedGauche(float targetCmParSec) {
+    targetSpeedL = targetCmParSec;
 }

@@ -24,8 +24,11 @@ Variables globales et defines
 **************************************************************************** */
 // Global variables :)
 int valEtat = -1; // 0 = Ready to start, 1 = running, 2 = done
-byte startColor = 7;
+byte startColor = 2;
 int distanceMurDepart = 0;
+unsigned long allPurpousTimer = 0;
+int tempsEnSecPourLeVirage = 3;
+
 
 //mur
 const int ROUGE_GAUCHE = 49; // Front gauche
@@ -70,36 +73,74 @@ void loop() {
         case -1: // Attente de départ
             if (ROBUS_IsBumper(REAR)) { 
                 valEtat++;
-                startColor = capteurCouleur.lireCouleur();
                 distanceMurDepart = ROBUS_ReadIR(3);
-                moteur.avancerLigneDroite(0.4);
+                moteur.avancerLigneDroite(0.2);
             }
             break;
         case 0: // Vers section 1
-            if (ROBUS_ReadIR(3) < 100) {
-                // Moteur commence à virer à droite
-                // TODO faire une vraie fonction pour ceci lol xd mdr
-                
-                /*moteur.moteurSetSpeedDroite(0.11);
-                moteur.moteurSetSpeedGauche(0.162);*/
+            if (ROBUS_IsBumper(LEFT) || ROBUS_IsBumper(RIGHT)) {
+
+                // Faire le calcul du quart de circonférence en fonction de la couleur de départ
+
+                int distanceRoueDroitePouces = 0;
+                int distanceRoueGauchePouces = 0;
+
+                if (startColor == 2) { // C'est le vert
+                    distanceRoueDroitePouces = 1;
+                    distanceRoueGauchePouces = 2;
+                }
+
+                float circonferenceRoueDroiteCM = (distanceRoueDroitePouces * 30.5 + 6) * 2 * PI;
+                float circonferenceRoueGaucheCM = (distanceRoueGauchePouces * 30.5 - 6) * 2 * PI;
+
+                Serial.print("Circonference droite : ");
+                Serial.println(circonferenceRoueDroiteCM);
+                Serial.print("Circonference gauche : ");
+                Serial.println(circonferenceRoueGaucheCM);
+
+                moteur.setTargetSpeedDroite(circonferenceRoueDroiteCM / 4 / tempsEnSecPourLeVirage);
+                moteur.setTargetSpeedGauche(circonferenceRoueGaucheCM / 4 / tempsEnSecPourLeVirage);
+                allPurpousTimer = millis();
                 valEtat++;
             }
             break;
         case 1: // Fin du virage, arrive sur le tapis
-            if (true==false) {
-                moteur.avancerLigneDroite();
+            if (allPurpousTimer + tempsEnSecPourLeVirage * 1000 < millis() ) {
+                Serial.println("Fin du virage");
+                allPurpousTimer = 0;
+                moteur.avancerLigneDroite(0.2);
                 valEtat++;
             }
             break;
-        /*case 2: // Commence le deuxieme virage
-            if (ROBUS_ReadIR(3) < distanceMurDepart + 100) {
-                // Moteur commence à virer à droite
-                // TODO faire une vraie fonction pour ceci lol xd mdr
-                moteur.avancerLigneDroite(0.3);
+        case 2: // Commence le deuxieme virage
+            if (ROBUS_ReadIR(3) < 100) {
+                
+                // Faire le calcul du quart de circonférence en fonction de la couleur de départ
+
+                int distanceRoueDroitePouces = 0;
+                int distanceRoueGauchePouces = 0;
+
+                if (startColor == 2) { // C'est le vert
+                    distanceRoueDroitePouces = 1;
+                    distanceRoueGauchePouces = 2;
+                }
+
+                float circonferenceRoueDroiteCM = (distanceRoueDroitePouces * 30.5 + 6) * 2 * PI;
+                float circonferenceRoueGaucheCM = (distanceRoueGauchePouces * 30.5 - 6) * 2 * PI;
+
+                moteur.setTargetSpeedDroite(circonferenceRoueDroiteCM / 4 / tempsEnSecPourLeVirage);
+                moteur.setTargetSpeedGauche(circonferenceRoueDroiteCM / 4 / tempsEnSecPourLeVirage);
+                allPurpousTimer = millis();
                 valEtat++;
             }
-            break;*/
-        case 3: // On est arrivé pour faire tomber le verre
+            break;
+        case 3: // Même virage que le premier
+            if (allPurpousTimer + tempsEnSecPourLeVirage * 1000 < millis() ) {
+                moteur.avancerLigneDroite(0.2);
+                valEtat++;
+            }
+            break;
+        case 4: // On est arrivé pour faire tomber le verre
 
             // Dépendant de notre couleur, on check un des deux capteurs de distance d'APP1
             if (startColor == capteurCouleur.VERT && digitalRead(VERTE_GAUCHE) == LOW) {
@@ -124,7 +165,7 @@ void loop() {
                 valEtat++;
             }
             break;
-        case 4: // On se rend au suiveur de ligne
+        case 5: // On se rend au suiveur de ligne
             if (capteurCouleur.BLANC == capteurCouleur.lireCouleur()) {
                 valEtat++;
             }

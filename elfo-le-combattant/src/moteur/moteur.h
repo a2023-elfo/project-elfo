@@ -17,7 +17,7 @@ class Moteur {
         int previousTimeR;
 
         // Max speed, acceleration et deceleration
-        const float acceleration = 0.093;
+        const float acceleration = 0.098;
         const float deceleration = 0.22;
 
         // Current targets
@@ -27,6 +27,10 @@ class Moteur {
         float currentSpeedR = 0;
         float currentCommandL = 0;
         float currentCommandR = 0;
+
+        // Current distance
+        int distanceL = 0;
+        int distanceR = 0;
 
         // PID functions
         void resetVariablesMoteur(int moteur = 3);
@@ -47,4 +51,8 @@ class Moteur {
         void moteurArretUrgence();
         float getDistanceParcourue(int moteur);
         float getDistanceVitesseEnCMparS(float vitesse);
+        float getDistanceParcourueGaucheEnCM();
+        float getDistanceParcourueDroiteEnCM();
+        void setTargetSpeedGauche(float targetCmParSec);
+        void setTargetSpeedDroite(float targetCmParSec);
 };
